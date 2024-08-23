@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url('https://i.pinimg.com/originals/e4/fa/06/e4fa061200efe8e8b35955892e984e60.gif') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .login-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+        }
+        .login-container input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .login-container button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>تسجيل الدخول</h1>
+        <input id="username-input" type="text" placeholder="أدخل اسم المستخدم">
+        <button id="login-button">تسجيل الدخول</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getDatabase, ref, set, onDisconnect } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAt22aeBSz65U8iuxkyk1fW8-2CmQIh9Og",
+            authDomain: "space-chat-cbf20.firebaseapp.com",
+            databaseURL: "https://space-chat-cbf20-default-rtdb.firebaseio.com",
+            projectId: "space-chat-cbf20",
+            storageBucket: "space-chat-cbf20.appspot.com",
+            messagingSenderId: "87313843352",
+            appId: "1:87313843352:web:93e61898efefe44b257ced",
+            measurementId: "G-6Z2BKKZZM8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        const usernameInput = document.getElementById('username-input');
+        const loginButton = document.getElementById('login-button');
+
+        loginButton.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            if (username) {
+                const userColor = `#${Math.floor(Math.random()*16777215).toString(16)}`;
+                localStorage.setItem('username', username);
+                localStorage.setItem('userColor', userColor);
+
+                set(ref(database, `onlineUsers/${username}`), { username, color: userColor });
+                onDisconnect(ref(database, `onlineUsers/${username}`)).remove();
+
+                window.location.href = 'chat.html'; // Redirect to chat page
+            }
+        });
+    </script>
+
+</body></html>
